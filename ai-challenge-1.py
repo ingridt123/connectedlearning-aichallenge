@@ -22,6 +22,10 @@ total = 0       # total number of problems attempted
 correct = 0     # total number of problems with correct answers
 
 for problemString in problems:
+    # print problem
+    print("Question: " + problemString.strip())
+
+    # add to total
     total += 1
 
     # dictionary for corresponding operation in list
@@ -47,35 +51,38 @@ for problemString in problems:
     for index in indexes:
         units.append(problemWords[index+1])
 
-    # check if units are the same
+    # check if units are the same and assign unit
     sameUnit = all(units[0] == item for item in units)
     unit = ""
     if sameUnit:
-        possibility[0] += 1     # addition
-        possibility[1] += 1     # subtraction
+        possibility[0] += 5     # addition
+        possibility[1] += 5     # subtraction
         unit = units[0]
     else:
-        possibility[2] += 1     # multiplication
-        possibility[3] += 1     # division
-        unitCount = []
+        possibility[2] += 5     # multiplication
+        possibility[3] += 5     # division
+        # count number of occurrences of unit in problem and (TODO) units array
+        problemUnitCount = []
         for u in units:
-            unitCount.append(problemWords.count(u))
+            problemUnitCount.append(problemWords.count(u))
         unitLargest = 0
-        for c in range(len(unitCount)):
-            if unitCount[c] > unitCount[unitLargest]:
+        for c in range(len(problemUnitCount)):
+            if problemUnitCount[c] > problemUnitCount[unitLargest]:
                 unitLargest = c
         unit = units[unitLargest]
 
+    # check if key words are in problem
     # TODO: differentiate possibilities more
-    # check if key words are in problem -- TODO: weight different words
     # TODO: more features -- e.g. structures, ordering of words, minus if key words not in?
-    keyWords = [["how", "much", "many", "in", "total?"], ["how", "much", "many", "away", "left"], ["each", "how",
-                "many", "much", "in", "total"], ["how", "many", "much", "distribute", "equal", "equally"]]
+    keyWords = [{"how": 1, "much": 1, "many": 1, "in": 4, "total": 4},
+                {"how": 1, "much": 1, "many": 1, "away": 4, "left": 4},
+                {"how": 1, "many": 1, "much": 1, "each": 3, "in": 4, "total": 4},
+                {"how": 1, "many": 1, "much": 1, "each": 3, "distribute": 4, "equal": 4, "equally": 4}]
     for keyList in keyWords:
         currentIndex = keyWords.index(keyList)
-        for word in keyList:
+        for word in keyList.keys():
             if word in problemWords:
-                possibility[currentIndex] += 1
+                possibility[currentIndex] += keyList.get(word)
 
     # find largest possibility
     print("Possibilities: " + str(possibility))
