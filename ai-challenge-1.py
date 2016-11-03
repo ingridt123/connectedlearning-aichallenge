@@ -1,12 +1,27 @@
 import re
 import string
 
-
-fileName = input("Input file name: ")
-with open(fileName, "r") as file:
+# read in questions file
+qFile = input("Input questions file name: ")
+with open(qFile, "r") as file:
     problems = file.readlines()
 
+# read in answers file
+aFile = input("Input answers file name: ")
+with open(aFile, "r") as file:
+    answers = file.readlines()
+
+# strip \n from answers
+for a in range(len(answers)):
+    answers[a] = answers[a].strip()
+
+# statistics for error checking
+total = 0       # total number of problems attempted
+correct = 0     # total number of problems with correct answers
+
 for problemString in problems:
+    total += 1
+
     # dictionary for corresponding operation in list
     dictOperators = {0: "addition", 1: "subtraction", 2: "multiplication", 3: "division"}
 
@@ -59,13 +74,16 @@ for problemString in problems:
         for word in keyList:
             if word in problemWords:
                 possibility[currentIndex] += 1
-    print(possibility)
 
     # find largest possibility
+    print(possibility)
     largest = 0
     for poss in range(len(possibility)-1):
         if possibility[poss] > possibility[largest]:
             largest = poss
+
+    # test for later on whether answer is correct
+    right = False
 
     # find operator based on largest possibility
     count = possibility.count(possibility[largest])
@@ -75,27 +93,53 @@ for problemString in problems:
         for i in range(len(possibility)):
             if possibility[i] == possibility[largest]:
                 print(dictOperators[i])
+        right = False
     else:
         operator = dictOperators[largest]
-        if operator is "addition":
+        answer = ""
+        if operator is "addition":                      # addition
             sum = 0
             for num in nums:
                 sum += num
-            print(str(sum) + " " + unit)
-        elif operator is "multiplication":
+            answer = str(sum) + " " + unit
+        elif operator is "multiplication":              # multiplication
             product = 1
             for num in nums:
                 product *= num
-            print(str(product) + " " + unit)
-        elif operator is "subtraction":
+            answer = str(product) + " " + unit
+        elif operator is "subtraction":                 # subtraction
             nums.sort(reverse=True)
             difference = nums[0]
             for n in range(1, len(nums)):
                 difference -= nums[n]
-            print(str(difference) + " " + unit)
-        else:       # operator is "division"
+            answer = str(difference) + " " + unit
+        else:                                           # division
             nums.sort(reverse=True)
             quotient = nums[0]
             for n in range(1, len(nums)):
                 quotient /= nums[n]
-            print(str(quotient) + " " + unit)
+            answer = str(quotient) + " " + unit
+
+        # print out final answer
+        print(answer)
+
+        # check if answer is correct
+        problemIndex = problems.index(problemString)
+        if answer == str(answers[problemIndex]):
+            right = True
+        else:
+            right = False
+
+    if right:
+        correct += 1
+
+    print()
+
+# print out statistics (error rate) after all problems have been attempted
+print("--\nSTATISTICS")
+print("Total: %i" % total)
+print("Correct: %i" % correct)
+percentage = correct / total * 100
+print("Accuracy: %.2f%%" % percentage)
+print("--")
+
