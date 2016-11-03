@@ -80,7 +80,7 @@ for problemString in problems:
     # find largest possibility
     print("Possibilities: " + str(possibility))
     largest = 0
-    for poss in range(len(possibility)-1):
+    for poss in range(len(possibility)):
         if possibility[poss] > possibility[largest]:
             largest = poss
 
@@ -94,7 +94,7 @@ for problemString in problems:
         countIndexes = []
         for i in range(len(possibility)):
             if possibility[i] == possibility[largest]:
-                print(dictOperators[i])
+                print("- " + dictOperators[i])
         right = False
     else:
         operator = dictOperators[largest]
@@ -121,10 +121,10 @@ for problemString in problems:
             quotient = nums[0]
             for n in range(1, len(nums)):
                 quotient /= nums[n]
-            answer = str(quotient) + " " + unit
+            answer = str(int(quotient)) + " " + unit
 
         # print out final answer
-        print("ANSWER: %s" % answer)
+        print("MY ANSWER: %s" % answer)
 
         # check if answer is correct
         problemIndex = problems.index(problemString)
