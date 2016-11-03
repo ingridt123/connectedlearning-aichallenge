@@ -2,12 +2,14 @@ import re
 import string
 
 # read in questions file
-qFile = input("Input questions file name: ")
+# qFile = input("Input questions file name: ")
+qFile = "questions.txt"
 with open(qFile, "r") as file:
     problems = file.readlines()
 
 # read in answers file
-aFile = input("Input answers file name: ")
+# aFile = input("Input answers file name: ")
+aFile = "answers.txt"
 with open(aFile, "r") as file:
     answers = file.readlines()
 
@@ -66,9 +68,9 @@ for problemString in problems:
 
     # TODO: differentiate possibilities more
     # check if key words are in problem -- TODO: weight different words
-    # TODO: more features -- e.g. structures, ordering
+    # TODO: more features -- e.g. structures, ordering of words, minus if key words not in?
     keyWords = [["how", "much", "many", "in", "total?"], ["how", "much", "many", "away", "left"], ["each", "how",
-                "many", "much", "in", "total"], ["distribute", "equal", "equally"]]
+                "many", "much", "in", "total"], ["how", "many", "much", "distribute", "equal", "equally"]]
     for keyList in keyWords:
         currentIndex = keyWords.index(keyList)
         for word in keyList:
@@ -76,7 +78,7 @@ for problemString in problems:
                 possibility[currentIndex] += 1
 
     # find largest possibility
-    print(possibility)
+    print("Possibilities: " + str(possibility))
     largest = 0
     for poss in range(len(possibility)-1):
         if possibility[poss] > possibility[largest]:
@@ -96,6 +98,7 @@ for problemString in problems:
         right = False
     else:
         operator = dictOperators[largest]
+        print("Operator: %s" % operator)
         answer = ""
         if operator is "addition":                      # addition
             sum = 0
@@ -121,7 +124,7 @@ for problemString in problems:
             answer = str(quotient) + " " + unit
 
         # print out final answer
-        print(answer)
+        print("ANSWER: %s" % answer)
 
         # check if answer is correct
         problemIndex = problems.index(problemString)
@@ -131,7 +134,10 @@ for problemString in problems:
             right = False
 
     if right:
+        print("Correct!")
         correct += 1
+    else:
+        print("Incorrect.")
 
     print()
 
