@@ -1,6 +1,27 @@
 import re
 import string
 
+# TODO: differentiate possibilities more
+# TODO: more features -- e.g. structures, ordering of words, minus if key words not in?
+# TODO: more problems (at least 10 each)
+
+""" CONSTANTS """
+# dictionary for corresponding operation
+dictOperators = {0: "addition", 1: "subtraction", 2: "multiplication", 3: "division"}
+
+# keywords and weights (check in problem)
+keyWords = [{("in", "total"): 6},
+            {"away": 4, "left": 4},
+            {"each": 3, "per": 3, ("in", "total"): 6, ("at", "a", "time"): 6},
+            {"each": 3, "distribute": 4, "equal": 4, "equally": 4, ("at", "a", "time"): 6}]
+# keyWords = ["in", "total", "away", "left", "each", "distribute", "equal", "equally"]
+# weights = [[4, 4, 0, 0, 0, 0, 0, 0], [0, 0, 4, 4, 0, 0, 0, 0], [4, 4, 0, 0, 3, 0, 0, 0], [0, 0, 0, 0, 3, 4, 4, 4]]
+
+# checking for units
+unit_check = [["how", "much"], ["how", "many"]]
+
+
+""" BEGIN PROCESSING """
 # read in questions file
 # qFile = input("Input questions file name: ")
 qFile = "questions.txt"
@@ -21,6 +42,8 @@ for a in range(len(answers)):
 total = 0       # total number of problems attempted
 correct = 0     # total number of problems with correct answers
 
+
+""" SOLVING PROBLEMS """
 for problemString in problems:
     # print problem
     print("Question: " + problemString.strip())
@@ -28,15 +51,12 @@ for problemString in problems:
     # add to total
     total += 1
 
-    # dictionary for corresponding operation in list
-    dictOperators = {0: "addition", 1: "subtraction", 2: "multiplication", 3: "division"}
-
-    # possibility for each operation -- addition, subtraction, multiplication, division (highest number is operator)
+    # possibility for each operation (highest number is operator)
     possibility = [0, 0, 0, 0]
 
     # look for numbers
     problemWords = problemString.lower().split(" ")
-    for i in range(len(problemWords)-1):
+    for i in range(len(problemWords)):
         problemWords[i] = re.sub(r"["+string.punctuation+"]", "", problemWords[i].strip())
 
     nums = []
@@ -47,47 +67,46 @@ for problemString in problems:
             indexes.append(w)
 
     # look for units
+    unit = ""
+    for check in unit_check:
+        if check[0] and check[1] in problemWords:
+            howIndex = problemWords.index(check[0])
+            unit = problemWords[howIndex+2]     # unit after "how much" or "how many"
+
     units = []
     for index in indexes:
         units.append(problemWords[index+1])
 
-    # check if units are the same and assign unit
+    # check if units are the same
     sameUnit = all(units[0] == item for item in units)
-    unit = ""
+    # sameUnitAfter = all(unit == item for item in units)
+    print("Same Unit? %r" % sameUnit)
     if sameUnit:
-        possibility[0] += 5     # addition
-        possibility[1] += 5     # subtraction
-        unit = units[0]
+        possibility[0] += 3     # addition
+        possibility[1] += 3     # subtraction
     else:
-        possibility[2] += 5     # multiplication
-        possibility[3] += 5     # division
-        # TODO: find word after "how much" or "how many" to set as unit (for addition and subtraction as well?)
-        hows = problemString.count("how")
-        for h in range(hows):
-            problemString.index()
+        possibility[2] += 3     # multiplication
+        possibility[3] += 3     # division
 
-        # # count number of occurrences of unit in problem and (TODO) units array
-        # problemUnitCount = []
-        # for u in units:
-        #     problemUnitCount.append(problemWords.count(u))
-        # unitLargest = 0
-        # for c in range(len(problemUnitCount)):
-        #     if problemUnitCount[c] > problemUnitCount[unitLargest]:
-        #         unitLargest = c
-        # unit = units[unitLargest]
-
-    # check if key words are in problem
-    # TODO: differentiate possibilities more
-    # TODO: more features -- e.g. structures, ordering of words, minus if key words not in?
-    keyWords = [{"in": 4, "total": 4},
-                {"away": 4, "left": 4},
-                {"each": 3, "in": 4, "total": 4},
-                {"each": 3, "distribute": 4, "equal": 4, "equally": 4}]
+    # add keyword weighting to possibilities
+        # for word in keyWords:
+        #     for weight in weights:
+        #         currentIndex = weights.index(weight)
+        #         if word in problemWords:
+        #             possibility[currentIndex] += weight.
     for keyList in keyWords:
         currentIndex = keyWords.index(keyList)
         for word in keyList.keys():
-            if word in problemWords:
-                possibility[currentIndex] += keyList.get(word)
+            if type(word) is tuple:
+                inProblem = True
+                for listWord in word:
+                    if listWord not in problemWords:
+                        inProblem = False
+                if inProblem:
+                    possibility[currentIndex] += keyList.get(word)
+            else:
+                if word in problemWords:
+                    possibility[currentIndex] += keyList.get(word)
 
     # find largest possibility
     print("Possibilities: " + str(possibility))
