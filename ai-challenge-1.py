@@ -1,6 +1,20 @@
 import re
 import string
 
+
+"""
+Constants
+"""
+
+keyWords = [{"in": 4, "total": 4},
+            {"away": 4, "left": 4},
+            {"each": 3, "in": 4, "total": 4},
+            {"each": 3, "distribute": 4, "equal": 4, "equally": 4}]
+dictOperators = {0: "addition", 1: "subtraction", 2: "multiplication", 3: "division"}
+unitCheck = ["how many", "how much"]
+thresholdDifference = 2
+thresholdWeight = 2
+
 # read in questions file
 # qFile = input("Input questions file name: ")
 qFile = "questions.txt"
@@ -29,67 +43,85 @@ for problemString in problems:
     total += 1
 
     # dictionary for corresponding operation in list
-    dictOperators = {0: "addition", 1: "subtraction", 2: "multiplication", 3: "division"}
 
     # possibility for each operation -- addition, subtraction, multiplication, division (highest number is operator)
     possibility = [0, 0, 0, 0]
 
     # look for numbers
     problemWords = problemString.lower().split(" ")
-    for i in range(len(problemWords)-1):
+    for i in range(len(problemWords)):
         problemWords[i] = re.sub(r"["+string.punctuation+"]", "", problemWords[i].strip())
 
-    nums = []
-    indexes = []
-    for w in range(len(problemWords)):
-        if re.match(r"[0-9]", problemWords[w]):
-            nums.append(int(problemWords[w]))
-            indexes.append(w)
-
-    # look for units
+    values = []
     units = []
-    for index in indexes:
-        units.append(problemWords[index+1])
+    for i, word in enumerate(problemWords):
+        if re.match(r"[0-9]", word, flags=re.IGNORECASE):
+            values.append({
+                "value": int(word),
+                "unit": problemWords[i+1]
+            })
+        for case in unitCheck:
+            try:
+                final = i + len(case.split(" "))
+                parts = " ".join([problemWords[w] for w in range(i, final)])
+                if parts == case:
+                    units.append(problemWords[final])
+            except:
+                continue
 
-    # check if units are the same and assign unit
-    sameUnit = all(units[0] == item for item in units)
-    unit = ""
+    valueUnits = [item["unit"] for item in values]
+    sameUnit = True
+    for unit in units:
+        if not all([unit == item for item in valueUnits]):
+            sameUnit = False
+            break
+
+    unit = units[0] or ""
     if sameUnit:
         possibility[0] += 5     # addition
         possibility[1] += 5     # subtraction
-        unit = units[0]
     else:
         possibility[2] += 5     # multiplication
         possibility[3] += 5     # division
-        # count number of occurrences of unit in problem and (TODO) units array
-        problemUnitCount = []
-        for u in units:
-            problemUnitCount.append(problemWords.count(u))
-        unitLargest = 0
-        for c in range(len(problemUnitCount)):
-            if problemUnitCount[c] > problemUnitCount[unitLargest]:
-                unitLargest = c
-        unit = units[unitLargest]
 
     # check if key words are in problem
     # TODO: differentiate possibilities more
     # TODO: more features -- e.g. structures, ordering of words, minus if key words not in?
-    keyWords = [{"how": 1, "much": 1, "many": 1, "in": 4, "total": 4},
-                {"how": 1, "much": 1, "many": 1, "away": 4, "left": 4},
-                {"how": 1, "many": 1, "much": 1, "each": 3, "in": 4, "total": 4},
-                {"how": 1, "many": 1, "much": 1, "each": 3, "distribute": 4, "equal": 4, "equally": 4}]
+    """
+    Weighting
+    """
+    # keyword weights
     for keyList in keyWords:
         currentIndex = keyWords.index(keyList)
         for word in keyList.keys():
             if word in problemWords:
                 possibility[currentIndex] += keyList.get(word)
 
-    # find largest possibility
-    print("Possibilities: " + str(possibility))
     largest = 0
     for poss in range(len(possibility)):
         if possibility[poss] > possibility[largest]:
             largest = poss
+
+    withoutMax = possibility[0: largest] + possibility[largest+1:]
+    secondLargest = withoutMax.index(max(withoutMax))
+    if largest <= secondLargest:
+        secondLargest += 1
+
+    if abs(possibility[largest] - possibility[secondLargest]) <= thresholdDifference:
+        filteredVals = [item["value"] for item in values]
+        if filteredVals.index(max(filteredVals)) == len(filteredVals) - 1:
+            if largest == 3 or secondLargest == 3:
+                possibility[3] += thresholdWeight
+            elif largest == 1 or secondLargest == 1:
+                possibility[1] += thresholdWeight
+        else:
+            if largest == 2 or secondLargest == 2:
+                possibility[2] += thresholdWeight
+            elif largest == 0 or secondLargest == 0:
+                possibility[0] += thresholdWeight
+
+    # find largest possibility
+    print("Possibilities: " + str(possibility))
 
     # test for later on whether answer is correct
     right = False
@@ -104,6 +136,7 @@ for problemString in problems:
                 print("- " + dictOperators[i])
         right = False
     else:
+        nums = [item["value"] for item in values]
         operator = dictOperators[largest]
         print("Operator: %s" % operator)
         answer = ""
@@ -155,4 +188,8 @@ print("Correct: %i" % correct)
 percentage = correct / total * 100
 print("Accuracy: %.2f%%" % percentage)
 print("--")
+
+# Compare the values of number occurences
+# Change assumption for units
+# number of items can determine the type of operation
 
