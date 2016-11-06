@@ -8,3 +8,6 @@ Write a computer program that takes a "third-grade real-world math problem" as i
 ### Methodology (draft)
 - Possibility array checks for probability of each operator based on a number of parameters (e.g. key words), which is used at the end of the program to determine operator
 - Units are determined as the word after "how much" or "how many"
+
+### Test Set of Questions
+Modified from [http://www.k5learning.com/free-math-worksheets/third-grade-3/word-problems-mixed](http://www.k5learning.com/free-math-worksheets/third-grade-3/word-problems-mixed)
