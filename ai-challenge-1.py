@@ -10,8 +10,8 @@ import string
 dictOperators = {0: "addition", 1: "subtraction", 2: "multiplication", 3: "division"}
 
 # keywords and weights (check in problem)
-keyWords = [{("in", "total"): 6},
-            {"away": 4, "left": 4},
+keyWords = [{("in", "total"): 6, "more": 4},
+            {"away": 4, "left": 4, ("more", "than"): 5},
             {"each": 3, "per": 3, ("in", "total"): 6, ("at", "a", "time"): 6},
             {"each": 3, "distribute": 4, "equal": 4, "equally": 4, ("at", "a", "time"): 6}]
 # keyWords = ["in", "total", "away", "left", "each", "distribute", "equal", "equally"]
@@ -33,6 +33,9 @@ with open(qFile, "r") as file:
 aFile = "answers.txt"
 with open(aFile, "r") as file:
     answers = file.readlines()
+
+if len(problems) != len(answers):
+    print("NUMBER OF PROBLEMS AND ANSWERS DON'T ALIGN!")
 
 # strip \n from answers
 for a in range(len(answers)):
@@ -82,8 +85,16 @@ for problemString in problems:
     # sameUnitAfter = all(unit == item for item in units)
     print("Same Unit? %r" % sameUnit)
     if sameUnit:
-        possibility[0] += 3     # addition
-        possibility[1] += 3     # subtraction
+        if "each" in problemWords:
+            eachIndex = problemWords.index("each")
+            if problemWords[eachIndex+1] == unit:
+                possibility[3] += 3  # division
+            else:
+                possibility[2] += 3  # multiplication
+                possibility[3] += 3  # division
+        else:
+            possibility[0] += 3     # addition
+            possibility[1] += 3     # subtraction
     else:
         possibility[2] += 3     # multiplication
         possibility[3] += 3     # division
