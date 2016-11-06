@@ -61,23 +61,28 @@ for problemString in problems:
     else:
         possibility[2] += 5     # multiplication
         possibility[3] += 5     # division
-        # count number of occurrences of unit in problem and (TODO) units array
-        problemUnitCount = []
-        for u in units:
-            problemUnitCount.append(problemWords.count(u))
-        unitLargest = 0
-        for c in range(len(problemUnitCount)):
-            if problemUnitCount[c] > problemUnitCount[unitLargest]:
-                unitLargest = c
-        unit = units[unitLargest]
+        # TODO: find word after "how much" or "how many" to set as unit (for addition and subtraction as well?)
+        hows = problemString.count("how")
+        for h in range(hows):
+            problemString.index()
+
+        # # count number of occurrences of unit in problem and (TODO) units array
+        # problemUnitCount = []
+        # for u in units:
+        #     problemUnitCount.append(problemWords.count(u))
+        # unitLargest = 0
+        # for c in range(len(problemUnitCount)):
+        #     if problemUnitCount[c] > problemUnitCount[unitLargest]:
+        #         unitLargest = c
+        # unit = units[unitLargest]
 
     # check if key words are in problem
     # TODO: differentiate possibilities more
     # TODO: more features -- e.g. structures, ordering of words, minus if key words not in?
-    keyWords = [{"how": 1, "much": 1, "many": 1, "in": 4, "total": 4},
-                {"how": 1, "much": 1, "many": 1, "away": 4, "left": 4},
-                {"how": 1, "many": 1, "much": 1, "each": 3, "in": 4, "total": 4},
-                {"how": 1, "many": 1, "much": 1, "each": 3, "distribute": 4, "equal": 4, "equally": 4}]
+    keyWords = [{"in": 4, "total": 4},
+                {"away": 4, "left": 4},
+                {"each": 3, "in": 4, "total": 4},
+                {"each": 3, "distribute": 4, "equal": 4, "equally": 4}]
     for keyList in keyWords:
         currentIndex = keyWords.index(keyList)
         for word in keyList.keys():
