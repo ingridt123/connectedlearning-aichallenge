@@ -8,6 +8,12 @@ as output. See example below:
 > **Output:** 423 grams
 
 <br/>
+
+### Test Set of Questions
+Modified from [http://www.k5learning.com/free-math-worksheets/third-grade-3/word-problems-mixed](http://www.k5learning.com/free-math-worksheets/third-grade-3/word-problems-mixed)
+
+<br/>
+
 ### Methodology
 - Possibility array checks for probability of each operator based on a number of parameters (e.g key words), which is
 used at the end of the program to determine operator
@@ -48,8 +54,3 @@ After answering all the questions, the program prints out a statistical summary.
 > Accuracy: 72.50%<br/>
 > Wrong Questions: [20, 26, 27, 28, 29, 30, 33, 34, 35, 37, 40]<br/>
 > &#45;&#45;
-
-<br/>
-
-### Test Set of Questions
-Modified from [http://www.k5learning.com/free-math-worksheets/third-grade-3/word-problems-mixed](http://www.k5learning.com/free-math-worksheets/third-grade-3/word-problems-mixed)
