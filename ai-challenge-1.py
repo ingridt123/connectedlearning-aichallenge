@@ -3,7 +3,7 @@ import string
 
 # TODO: differentiate possibilities more
 # TODO: more features -- e.g. structures, ordering of words
-# TODO: threshold (variables + method)
+# TODO: threshold (variables + method)??
 
 """ CONSTANTS """
 # dictionary for corresponding operation
@@ -45,14 +45,17 @@ for a in range(len(answers)):
 total = 0       # total number of problems attempted
 correct = 0     # total number of problems with correct answers
 
+# array of incorrect questions
+wrongQu = []
+
 
 """ SOLVING PROBLEMS """
 for problemString in problems:
-    # print problem
-    print("Question %i: %s" % (total+1, problemString.strip()))
-
     # add to total
     total += 1
+
+    # print problem
+    print("Question %i: %s" % (total, problemString.strip()))
 
     # possibility for each operation (highest number is operator)
     possibility = [0, 0, 0, 0]
@@ -179,6 +182,7 @@ for problemString in problems:
         correct += 1
     else:
         print("Incorrect.")
+        wrongQu.append(total)
 
     print()
 
@@ -188,5 +192,6 @@ print("Total: %i" % total)
 print("Correct: %i" % correct)
 percentage = correct / total * 100
 print("Accuracy: %.2f%%" % percentage)
+print("Wrong Questions: %s" % str(wrongQu))
 print("--")
 
