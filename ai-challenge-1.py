@@ -2,8 +2,8 @@ import re
 import string
 
 # TODO: differentiate possibilities more
-# TODO: more features -- e.g. structures, ordering of words, minus if key words not in?
-# TODO: more problems (at least 10 each)
+# TODO: more features -- e.g. structures, ordering of words
+# TODO: threshold (variables + method)
 
 """ CONSTANTS """
 # dictionary for corresponding operation
@@ -49,7 +49,7 @@ correct = 0     # total number of problems with correct answers
 """ SOLVING PROBLEMS """
 for problemString in problems:
     # print problem
-    print("Question: " + problemString.strip())
+    print("Question %i: %s" % (total+1, problemString.strip()))
 
     # add to total
     total += 1
@@ -99,12 +99,7 @@ for problemString in problems:
         possibility[2] += 3     # multiplication
         possibility[3] += 3     # division
 
-    # add keyword weighting to possibilities
-        # for word in keyWords:
-        #     for weight in weights:
-        #         currentIndex = weights.index(weight)
-        #         if word in problemWords:
-        #             possibility[currentIndex] += weight.
+    # add/subtract keyword weighting to possibilities
     for keyList in keyWords:
         currentIndex = keyWords.index(keyList)
         for word in keyList.keys():
@@ -115,9 +110,13 @@ for problemString in problems:
                         inProblem = False
                 if inProblem:
                     possibility[currentIndex] += keyList.get(word)
+                else:
+                    possibility[currentIndex] -= keyList.get(word)
             else:
                 if word in problemWords:
                     possibility[currentIndex] += keyList.get(word)
+                else:
+                    possibility[currentIndex] -= keyList.get(word)
 
     # find largest possibility
     print("Possibilities: " + str(possibility))
