@@ -28,21 +28,21 @@ possibilities
 5. Determine operator by identifying highest possibility
 6. Calculate the answer based on the chosen operator and print out the answer with unit
 For each question, the program prints out information to ease readability and troubleshooting. See sample output below:
->Question 1: If Rachel ate 276 grams of bacon and 147 grams of sausages, how many grams of food did she eat in total?
->Same Unit? True
->Possibilities: [5, -10, -6, -17]
->Difference: 11
->Operator: addition
->MY ANSWER: 423 grams
->Correct!
+> Question 1: If Rachel ate 276 grams of bacon and 147 grams of sausages, how many grams of food did she eat in total?
+> Same Unit? True
+> Possibilities: [5, -10, -6, -17]
+> Difference: 11
+> Operator: addition
+> MY ANSWER: 423 grams
+> Correct!
 After answering all the questions, the program prints out a statistical summary. See sample output below:
->--
->STATISTICS
->Total: 40
->Correct: 29
->Accuracy: 72.50%
->Wrong Questions: [20, 26, 27, 28, 29, 30, 33, 34, 35, 37, 40]
->--
+> --
+> STATISTICS
+> Total: 40
+> Correct: 29
+> Accuracy: 72.50%
+> Wrong Questions: [20, 26, 27, 28, 29, 30, 33, 34, 35, 37, 40]
+> --
 
 ### Test Set of Questions
 Modified from [http://www.k5learning.com/free-math-worksheets/third-grade-3/word-problems-mixed](http://www.k5learning.com/free-math-worksheets/third-grade-3/word-problems-mixed)
